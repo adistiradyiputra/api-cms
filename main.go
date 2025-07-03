@@ -9,6 +9,8 @@ import (
 )
 
 func main() {
+	// 1. Load .env dulu ke struct
+	// config.LoadEnv()
 
 	// 2. Connect ke DB pakai isi dari struct
 	config.ConnectDB()
