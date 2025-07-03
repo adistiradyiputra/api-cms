@@ -30,6 +30,6 @@ func LoadEnv() {
 		DBUser:     os.Getenv("DB_USER"),
 		DBPassword: os.Getenv("DB_PASSWORD"),
 		DBName:     os.Getenv("DB_NAME"),
-		AppPort:    os.Getenv("APP_PORT"),
+		// AppPort:    os.Getenv("APP_PORT"),
 	}
 }
