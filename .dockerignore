@@ -5,4 +5,8 @@ README.md
 .env.local
 .env.example
 tmp/
-*.log 
+*.log
+*.js
+*.html
+*.css
+node_modules/ 
