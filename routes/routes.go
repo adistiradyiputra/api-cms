@@ -8,15 +8,15 @@ import (
 )
 
 func UserRoute(route fiber.Router) {
-	// Auth
+	// Public routes (no authentication required)
 	route.Post("/register", controllers.Register)
 	route.Post("/login", controllers.Login)
-	route.Post("/logout", controllers.Logout)
 
+	// Protected routes (authentication required)
 	route.Use(middleware.Protected())
 
+	route.Post("/logout", controllers.Logout)
 	route.Get("/profile", controllers.GetProfile)
-
 	route.Get("/", controllers.GetUsers)
 	route.Get("/:id", controllers.GetUserById)
 	route.Post("/", controllers.CreateUser)
