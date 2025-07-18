@@ -11,10 +11,16 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
+	// Set default port if empty
+	port := ENV.DBPort
+	if port == "" {
+		port = "5432" // Default PostgreSQL port
+	}
+
 	// Ambil data dari ENV struct
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		ENV.DBHost, ENV.DBUser, ENV.DBPassword, ENV.DBName, ENV.DBPort,
+		ENV.DBHost, ENV.DBUser, ENV.DBPassword, ENV.DBName, port,
 	)
 
 	var err error

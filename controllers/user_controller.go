@@ -5,6 +5,7 @@ import (
 	"go-fiber/models"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func GetUsers(c *fiber.Ctx) error {
@@ -23,6 +24,47 @@ func GetUserById(c *fiber.Ctx) error {
 		})
 	}
 	return c.JSON(user)
+}
+
+func GetProfile(c *fiber.Ctx) error {
+	// Ambil token JWT dari middleware
+	userToken := c.Locals("user")
+	if userToken == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Unauthorized",
+		})
+	}
+
+	// Parse klaim dari token JWT
+	claims := userToken.(*jwt.Token).Claims.(jwt.MapClaims)
+	authID := uint(claims["id"].(float64))
+
+	// Cari user berdasarkan auth_id
+	var user models.User
+	if err := config.DB.Where("auth_id = ?", authID).First(&user).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "User not found",
+		})
+	}
+
+	// Cari auth berdasarkan authID untuk mendapatkan username
+	var auth models.Auth
+	if err := config.DB.Where("id = ?", authID).First(&auth).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "Auth not found",
+		})
+	}
+
+	// Buat response yang menggabungkan data user dan auth
+	response := fiber.Map{
+		"id":       user.ID,
+		"name":     user.Name,
+		"email":    user.Email,
+		"auth_id":  user.AuthID,
+		"username": auth.Username,
+	}
+
+	return c.JSON(response)
 }
 
 func CreateUser(c *fiber.Ctx) error {
