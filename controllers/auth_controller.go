@@ -125,16 +125,20 @@ func Logout(c *fiber.Ctx) error {
 
 	fmt.Println("Token to blacklist:", token)
 
-	err := config.RDB.Set(config.Ctx, "blacklist:"+token, "1", time.Hour*24).Err()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Failed to blacklist token",
-		})
+	// Check if Redis is connected before using it
+	if config.RDB != nil {
+		err := config.RDB.Set(config.Ctx, "blacklist:"+token, "1", time.Hour*24).Err()
+		if err != nil {
+			log.Printf("Failed to blacklist token: %v", err)
+			// Continue with logout even if blacklist fails
+		}
+	} else {
+		log.Println("Warning: Redis not connected, skipping token blacklist")
 	}
 
 	c.ClearCookie("token")
 
 	return c.JSON(fiber.Map{
-		"message": "Logout berhasil dan token di-blacklist",
+		"message": "Logout berhasil",
 	})
 }
