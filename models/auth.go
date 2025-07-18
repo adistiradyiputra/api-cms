@@ -1,7 +1,7 @@
 package models
 
 type Auth struct {
-	ID       int    `json:"id" gorm:"primaryKey"`
+	ID       uint   `json:"id" gorm:"primaryKey;autoIncrement"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
