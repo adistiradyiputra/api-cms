@@ -12,9 +12,15 @@ import (
 )
 
 func main() {
+	log.Println("Starting application...")
+
 	// 1. Load .env dulu ke struct
 	config.LoadEnv()
+	log.Println("Environment loaded")
+
+	// Connect Redis (optional)
 	config.ConnectRedis()
+	log.Println("Redis connection attempted")
 
 	// 2. Connect ke DB pakai isi dari struct (optional untuk testing)
 	config.ConnectDB()
