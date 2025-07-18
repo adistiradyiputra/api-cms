@@ -26,8 +26,8 @@ var ENV EnvConfig
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		// log.Printf("Error loading .env file: %v", err)
-		log.Fatal("Error loading .env file")
+		// log.Printf("Error loading .env file: %v", err")
+		log.Println("Warning: .env file not found, using environment variables")
 	}
 
 	redisDB, _ := strconv.Atoi(os.Getenv("REDIS_DB"))
