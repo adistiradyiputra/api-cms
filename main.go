@@ -16,7 +16,7 @@ func main() {
 	config.LoadEnv()
 	config.ConnectRedis()
 
-	// 2. Connect ke DB pakai isi dari struct
+	// 2. Connect ke DB pakai isi dari struct (optional untuk testing)
 	config.ConnectDB()
 
 	// 3. Auto migrate user model (only if DB is connected)
@@ -25,6 +25,7 @@ func main() {
 		log.Println("Database migration completed")
 	} else {
 		log.Println("Warning: Database not connected, skipping migration")
+		log.Println("Application will start without database connection")
 	}
 
 	app := fiber.New()
