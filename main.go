@@ -5,6 +5,7 @@ import (
 	"go-fiber/models"
 	"go-fiber/routes"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -49,12 +50,17 @@ func main() {
 	user := api.Group("/user")
 	routes.UserRoute(user)
 
-	// 5. Listen pakai port dari .env atau default 8080
-	port := config.ENV.AppPort
+	// 5. Listen pakai port dari Railway atau .env atau default 8080
+	port := os.Getenv("PORT") // Railway menggunakan PORT
+	if port == "" {
+		port = config.ENV.AppPort
+	}
 	if port == "" {
 		port = "8080"
 	}
 
 	log.Printf("Server starting on port %s", port)
-	app.Listen(":" + port)
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }

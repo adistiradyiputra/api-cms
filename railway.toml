@@ -8,4 +8,5 @@ healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 
 [[services]]
-port = "8080" 
+port = "8080"
+internal_port = "8080" 
