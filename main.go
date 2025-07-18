@@ -4,6 +4,7 @@ import (
 	"go-fiber/config"
 	"go-fiber/models"
 	"go-fiber/routes"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -17,8 +18,13 @@ func main() {
 	// 2. Connect ke DB pakai isi dari struct
 	config.ConnectDB()
 
-	// 3. Auto migrate user model
-	config.DB.AutoMigrate(&models.User{}, &models.Auth{})
+	// 3. Auto migrate user model (only if DB is connected)
+	if config.DB != nil {
+		config.DB.AutoMigrate(&models.User{}, &models.Auth{})
+		log.Println("Database migration completed")
+	} else {
+		log.Println("Warning: Database not connected, skipping migration")
+	}
 
 	app := fiber.New()
 
@@ -43,6 +49,12 @@ func main() {
 	user := api.Group("/user")
 	routes.UserRoute(user)
 
-	// 5. Listen pakai port dari .env
-	app.Listen(":" + config.ENV.AppPort)
+	// 5. Listen pakai port dari .env atau default 8080
+	port := config.ENV.AppPort
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server starting on port %s", port)
+	app.Listen(":" + port)
 }
