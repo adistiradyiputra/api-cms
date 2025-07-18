@@ -27,6 +27,11 @@ func main() {
 
 	// 3. Auto migrate user model (only if DB is connected)
 	if config.DB != nil {
+		// Force drop and recreate tables for testing
+		log.Println("Dropping existing tables...")
+		config.DB.Migrator().DropTable(&models.User{}, &models.Auth{})
+
+		log.Println("Creating tables with new schema...")
 		config.DB.AutoMigrate(&models.User{}, &models.Auth{})
 		log.Println("Database migration completed")
 	} else {

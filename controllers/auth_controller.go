@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-fiber/config"
 	"go-fiber/models"
+	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -48,7 +49,9 @@ func Register(c *fiber.Ctx) error {
 		AuthID: uint(auth.ID),
 	}
 
+	// Use Create with explicit ID handling
 	if err := config.DB.Create(&user).Error; err != nil {
+		log.Printf("Error creating user: %v", err)
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Failed to create user profile",
 			"error":   err.Error(),
